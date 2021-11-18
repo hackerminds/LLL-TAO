@@ -1,82 +1,80 @@
-# Ledger API
------------------------------------
+# LEDGER
+
+## Ledger API
+
+***
 
 The Ledger API provides users with access to data held by the ledger such as blocks and transactions.
 
-## `Methods`
+### `Methods`
 
 The following methods are currently supported by this API
 
-[`get/blockhash`](#getblockhash)  
-[`get/block`](#getblock)   
-[`list/blocks`](#listblocks)   
-[`get/transaction`](#gettransaction)   
-[`submit/transaction`](#submittransaction)  
-[`void/transaction`](#voidtransaction)   
-[`get/mininginfo`](#getmininginfo)   
+[`get/blockhash`](ledger.md#getblockhash)\
+[`get/block`](ledger.md#getblock)\
+[`list/blocks`](ledger.md#listblocks)\
+[`get/transaction`](ledger.md#gettransaction)\
+[`submit/transaction`](ledger.md#submittransaction)\
+[`void/transaction`](ledger.md#voidtransaction)\
+[`get/mininginfo`](ledger.md#getmininginfo)
 
+***
 
+***
 
-
------------------------------------
-****
-
-# `get/blockhash`
+## `get/blockhash`
 
 Retrieves the hash of the block for the given height.
 
-
-### Endpoint:
+#### Endpoint:
 
 `/ledger/get/blockhash`
 
-
-### Parameters:
+#### Parameters:
 
 `height` : The block height to retrieve the hash for.
 
+#### Return value JSON object:
 
-### Return value JSON object:
-```    
+```
 {
     "hash"    : "<hash>"
 }    
 ```
 
-### Return values:
+#### Return values:
 
 `hash` : The hash of the block.
 
+***
 
-
-****
-# `get/block`
+## `get/block`
 
 Retrieves block data for the given block hash or height.
 
-### Endpoint:
+#### Endpoint:
 
 `/ledger/get/block`
 
-
-### Parameters:
+#### Parameters:
 
 `hash` : The block hash to retrieve the block data for.
 
 `height` : The block height to retrieve the block data for.
 
 `verbose` : Optional, determines how much transaction data to include in the response. Supported values are :
- - `none` : no transaction data
- - `default` : hash
- - `summary` : type, version, sequence, timestamp, and contracts.
- - `detail` : genesis, nexthash, prevhash, pubkey and signature.
 
+* `none` : no transaction data
+* `default` : hash
+* `summary` : type, version, sequence, timestamp, and contracts.
+* `detail` : genesis, nexthash, prevhash, pubkey and signature.
 
-**NOTE** : Either the hash or the height needs to be supplied, but not both.  
+**NOTE** : Either the hash or the height needs to be supplied, but not both.\
 Retrieving block data by height is only allowed if the daemon has been configured with `indexheight=1`.
 
-### Return value JSON object:
-```    
+#### Return value JSON object:
+
+```
 {
     "hash": "677444ec303ad3a0f408725e287529348f21f8b94c15e742469c30d6b9cd8eb17e3c2f059de8c83a663fe753704c0ababf5599f319b2ee63c1ed243b3abc4820ae9960254ed095e09a7bcd11b10f225865e6da8f7ca696e0445dac822e2dcc9d3de15b1759daf084447abcb0cc8b04a1e06d27d876c0c85b53fe3428a4095621",
     "proofhash": "39e2015948c026622b9abfc2cfe5dc2f9784965fd9eca511d8792db37c272802a864e2319fdbfe845ec2b65a7b0dee1f6bf0e4a9da5e76875022c39f6c8252746875be31bbadbfffca7cf9297101313c50d064fec9443b3f3545cc3ff7813898da7f7f845dda937875e603b125fbd085b5b4a81ddf05e1fcd0cbdbac13788d85",
@@ -108,10 +106,9 @@ Retrieving block data by height is only allowed if the daemon has been configure
         }
     ]
 }
-
 ```
 
-### Return values:
+#### Return values:
 
 `hash` : The hash of the block.
 
@@ -151,7 +148,7 @@ Retrieving block data by height is only allowed if the daemon has been configure
 
 `timestamp` : The Unix timestamp of when the transaction was created.
 
-`blockhash` : The hash of the block that this transaction is included in.  Blank if not yet included in a block.
+`blockhash` : The hash of the block that this transaction is included in. Blank if not yet included in a block.
 
 `confirmations` : The number of confirmations that this transaction has obtained by the network.
 
@@ -167,61 +164,60 @@ Retrieving block data by height is only allowed if the daemon has been configure
 
 `hash` : The transaction hash.
 
-`contracts` : The array of contracts bound to this transaction and their details with opcodes.    
-{    
-&nbsp;&nbsp;&nbsp;`id` : The sequential ID of this contract within the transaction.
+`contracts` : The array of contracts bound to this transaction and their details with opcodes.\
+{\
+`id` : The sequential ID of this contract within the transaction.
 
-&nbsp;&nbsp;&nbsp;`OP` : The contract operation. Can be `APPEND`, `CLAIM`, `COINBASE`, `CREATE`, `CREDIT`, `DEBIT`, `FEE`, `GENESIS`, `LEGACY`, `TRANSFER`, `TRUST`, `STAKE`, `UNSTAKE`, `WRITE`.
+&#x20;  `OP` : The contract operation. Can be `APPEND`, `CLAIM`, `COINBASE`, `CREATE`, `CREDIT`, `DEBIT`, `FEE`, `GENESIS`, `LEGACY`, `TRANSFER`, `TRUST`, `STAKE`, `UNSTAKE`, `WRITE`.
 
-&nbsp;&nbsp;&nbsp;`for` : For `CREDIT` transactions, the contract that this credit was created for . Can be `COINBASE`, `DEBIT`, or`LEGACY`.
+&#x20;  `for` : For `CREDIT` transactions, the contract that this credit was created for . Can be `COINBASE`, `DEBIT`, or`LEGACY`.
 
-&nbsp;&nbsp;&nbsp;`txid` : The transaction that was credited / claimed.
+&#x20;  `txid` : The transaction that was credited / claimed.
 
-&nbsp;&nbsp;&nbsp;`contract` : The ID of the contract within the transaction that was credited / claimed.
+&#x20;  `contract` : The ID of the contract within the transaction that was credited / claimed.
 
-&nbsp;&nbsp;&nbsp;`proof` : The register address proving the credit.
+&#x20;  `proof` : The register address proving the credit.
 
-&nbsp;&nbsp;&nbsp;`from` : For `DEBIT`, `CREDIT`, `FEE` transactions, the register address of the account that the debit is being made from.
+&#x20;  `from` : For `DEBIT`, `CREDIT`, `FEE` transactions, the register address of the account that the debit is being made from.
 
-&nbsp;&nbsp;&nbsp;`from_name` : For `DEBIT`, `CREDIT`, `FEE` transactions, the name of the account that the debit is being made from.  Only included if the name can be resolved.
+&#x20;  `from_name` : For `DEBIT`, `CREDIT`, `FEE` transactions, the name of the account that the debit is being made from. Only included if the name can be resolved.
 
-&nbsp;&nbsp;&nbsp;`to` : For `DEBIT` and `CREDIT` transactions, the register address of the recipient account.
+&#x20;  `to` : For `DEBIT` and `CREDIT` transactions, the register address of the recipient account.
 
-&nbsp;&nbsp;&nbsp;`to_name` : For `DEBIT` and `CREDIT` transactions, the name of the recipient account.  Only included if the name can be resolved.
+&#x20;  `to_name` : For `DEBIT` and `CREDIT` transactions, the name of the recipient account. Only included if the name can be resolved.
 
-&nbsp;&nbsp;&nbsp;`amount` : the token amount of the transaction.
+&#x20;  `amount` : the token amount of the transaction.
 
-&nbsp;&nbsp;&nbsp;`token` : the register address of the token that the transaction relates to.  Set to 0 for NXS transactions
+&#x20;  `token` : the register address of the token that the transaction relates to. Set to 0 for NXS transactions
 
-&nbsp;&nbsp;&nbsp;`token_name` : The name of the token that the transaction relates to.
+&#x20;  `token_name` : The name of the token that the transaction relates to.
 
-&nbsp;&nbsp;&nbsp;`reference` : For `DEBIT` and `CREDIT` transactions this is the user supplied reference used by the recipient to relate the transaction to an order or invoice number.
+&#x20;  `reference` : For `DEBIT` and `CREDIT` transactions this is the user supplied reference used by the recipient to relate the transaction to an order or invoice number.
 
 }
 
-****
+***
 
-# `list/blocks`
+## `list/blocks`
 
 Retrieves an array of block data for a sequential range of blocks from a given hash or height.
 
-
-### Endpoint:
+#### Endpoint:
 
 `/ledger/list/blocks`
 
-
-### Parameters:
+#### Parameters:
 
 `hash` : The block hash to retrieve the block data for.
 
 `height` : The block height to retrieve the block data for.
 
 `verbose` : This is optional, determines how much transaction data to include in the response. Supported values are :
- - `none` : no transaction data
- - `default` : hash
- - `summary` : type, version, sequence, timestamp, and operation.
- - `detail` : genesis, nexthash, prevhash, pubkey and signature.
+
+* `none` : no transaction data
+* `default` : hash
+* `summary` : type, version, sequence, timestamp, and operation.
+* `detail` : genesis, nexthash, prevhash, pubkey and signature.
 
 `limit` : The number of records to return for the current page. The default is 100.
 
@@ -229,14 +225,14 @@ Retrieves an array of block data for a sequential range of blocks from a given h
 
 `offset` : An alternative to `page`, offset can be used to return a set of (limit) results from a particular index.
 
-`where` : An array of clauses to filter the JSON results.  More information on filtering the results from /list/xxx API methods can be found here [Filtering Results](filtering-results.md)
+`where` : An array of clauses to filter the JSON results. More information on filtering the results from /list/xxx API methods can be found here [Filtering Results](../API/filtering-results.md)
 
-
-**NOTE** : Either the hash or the height needs to be supplied, but not both.  
+**NOTE** : Either the hash or the height needs to be supplied, but not both.\
 Retrieving block data by height is only allowed if the daemon has been configured with `indexheight=1`.
 
-### Return value JSON object:
-```    
+#### Return value JSON object:
+
+```
 [
     {
         "hash": "5534a161f52a2b4904c752fc487fca2ce18f27a25b2b7de9b894ac18a41a3b312a4a9b55204cf18b7b0ce0c55bc1d7a6decb0a4f3bad98f8274ae9e31d19a4862cf40daa0bc8bf567f14bcce43555c4a7ac9a7445647e9cb9f95ef759a7737917ece8d61306da38fd7d9ae45909de7ed96e82caa8af3f7ab6758fe539ac4d12f",
@@ -281,10 +277,9 @@ Retrieving block data by height is only allowed if the daemon has been configure
         ]
     }
 ]
-
 ```
 
-### Return values:
+#### Return values:
 
 `hash` : The hash of the block.
 
@@ -324,7 +319,7 @@ Retrieving block data by height is only allowed if the daemon has been configure
 
 `timestamp` : The Unix timestamp of when the transaction was created.
 
-`blockhash` : The hash of the block that this transaction is included in.  Blank if not yet included in a block.
+`blockhash` : The hash of the block that this transaction is included in. Blank if not yet included in a block.
 
 `confirmations` : The number of confirmations that this transaction has obtained by the network.
 
@@ -340,65 +335,62 @@ Retrieving block data by height is only allowed if the daemon has been configure
 
 `hash` : The transaction hash.
 
-`contracts` : The array of contracts bound to this transaction and their details with opcodes.    
-{    
-&nbsp;&nbsp;&nbsp;`idcontractid` : The sequential ID of this contract within the transaction.
+`contracts` : The array of contracts bound to this transaction and their details with opcodes.\
+{\
+`idcontractid` : The sequential ID of this contract within the transaction.
 
-&nbsp;&nbsp;&nbsp;`OP` : The contract operation. Can be `APPEND`, `CLAIM`, `COINBASE`, `CREATE`, `CREDIT`, `DEBIT`, `FEE`, `GENESIS`, `LEGACY`, `TRANSFER`, `TRUST`, `STAKE`, `UNSTAKE`, `WRITE`.
+&#x20;  `OP` : The contract operation. Can be `APPEND`, `CLAIM`, `COINBASE`, `CREATE`, `CREDIT`, `DEBIT`, `FEE`, `GENESIS`, `LEGACY`, `TRANSFER`, `TRUST`, `STAKE`, `UNSTAKE`, `WRITE`.
 
-&nbsp;&nbsp;&nbsp;`for` : For `CREDIT` transactions, the contract that this credit was created for . Can be `COINBASE`, `DEBIT`, or`LEGACY`.
+&#x20;  `for` : For `CREDIT` transactions, the contract that this credit was created for . Can be `COINBASE`, `DEBIT`, or`LEGACY`.
 
-&nbsp;&nbsp;&nbsp;`txid` : The transaction that was credited / claimed.
+&#x20;  `txid` : The transaction that was credited / claimed.
 
-&nbsp;&nbsp;&nbsp;`contract` : The ID of this contract within the transaction that was credited / claimed.
+&#x20;  `contract` : The ID of this contract within the transaction that was credited / claimed.
 
-&nbsp;&nbsp;&nbsp;`proof` : The register address proving the credit.
+&#x20;  `proof` : The register address proving the credit.
 
-&nbsp;&nbsp;&nbsp;`from` : For `DEBIT`, `CREDIT`, `FEE` transactions, the register address of the account that the debit is being made from.
+&#x20;  `from` : For `DEBIT`, `CREDIT`, `FEE` transactions, the register address of the account that the debit is being made from.
 
-&nbsp;&nbsp;&nbsp;`from_name` : For `DEBIT`, `CREDIT`, `FEE` transactions, the name of the account that the debit is being made from.  Only included if the name can be resolved.
+&#x20;  `from_name` : For `DEBIT`, `CREDIT`, `FEE` transactions, the name of the account that the debit is being made from. Only included if the name can be resolved.
 
-&nbsp;&nbsp;&nbsp;`to` : For `DEBIT` and `CREDIT` transactions, the register address of the recipient account.
+&#x20;  `to` : For `DEBIT` and `CREDIT` transactions, the register address of the recipient account.
 
-&nbsp;&nbsp;&nbsp;`to_name` : For `DEBIT` and `CREDIT` transactions, the name of the recipient account.  Only included if the name can be resolved.
+&#x20;  `to_name` : For `DEBIT` and `CREDIT` transactions, the name of the recipient account. Only included if the name can be resolved.
 
-&nbsp;&nbsp;&nbsp;`amount` : the token amount of the transaction.
+&#x20;  `amount` : the token amount of the transaction.
 
-&nbsp;&nbsp;&nbsp;`token` : the register address of the token that the transaction relates to.  Set to 0 for NXS transactions
+&#x20;  `token` : the register address of the token that the transaction relates to. Set to 0 for NXS transactions
 
-&nbsp;&nbsp;&nbsp;`token_name` : The name of the token that the transaction relates to.
+&#x20;  `token_name` : The name of the token that the transaction relates to.
 
-&nbsp;&nbsp;&nbsp;`reference` : For `DEBIT` and `CREDIT` transactions this is the user supplied reference used by the recipient to relate the transaction to an order or invoice number.
+&#x20;  `reference` : For `DEBIT` and `CREDIT` transactions this is the user supplied reference used by the recipient to relate the transaction to an order or invoice number.
 
 }
 
-****
+***
 
-
-# `get/transaction`
+## `get/transaction`
 
 Retrieves transaction data for a given transaction hash.
 
-
-### Endpoint:
+#### Endpoint:
 
 `/ledger/get/transaction`
 
+#### Parameters:
 
-### Parameters:
+`format` : Determines the format of the return value. Parameter value can be `JSON` (the default) or `raw`. If `raw` is specified then the method returns a serialized, hex-encoded transaction that can subsequently be broadcast to the network via `/ledger/submit/transaction`.
 
-`format` : Determines the format of the return value.  Parameter value can be `JSON` (the default) or `raw`.  If `raw` is specified then the method returns a serialized, hex-encoded transaction that can subsequently be broadcast to the network via `/ledger/submit/transaction`.
+`hash` : The block hash to retrieve the block data for. This is ignored if `raw` format is requested. `txid` : The block hash to retrieve the block data for. This is an alias for `hash`.
 
-`hash` : The block hash to retrieve the block data for. This is ignored if `raw` format is requested.
-`txid` : The block hash to retrieve the block data for. This is an alias for `hash`.
+`verbose` : Optional, determines how much transaction data to include in the response. This is ignored if `raw` format is requested. Supported values are :
 
-`verbose` : Optional, determines how much transaction data to include in the response. This is ignored if `raw` format is requested.  Supported values are :
- - `summary` : hash, type, version, sequence, timestamp, and contracts.
- - `detail` : genesis, nexthash, prevhash, pubkey and signature.
+* `summary` : hash, type, version, sequence, timestamp, and contracts.
+* `detail` : genesis, nexthash, prevhash, pubkey and signature.
 
+#### Return value JSON object:
 
-### Return value JSON object:
-```    
+```
 {
     "txid": "51fd1f61de02f0788cac3c2fcde94012ef12ed34227717f9f5fe2c019ac1aa0a3d3ad9580721eeced8f036c771eb2a8cc6d67a6409c721b68bbe66d1387b97f3",
     "contracts": [
@@ -426,10 +418,9 @@ Retrieves transaction data for a given transaction hash.
     "pubkey": "091ccca8e8e4082585c84345bfa298427ef887f66ab73ac298eb8be5b3678c0f32688a757380ab72e2a7fc055916d99ca38a2635fe82fe26b138bea72a84466a3d948f5993840d85c57a3025097d05ddf302a3d60a412af91075ec144412daa5ba4cefa40a51c5c616c4034236305eef9d8580ead40654752f261d03b5904f2dcd6cb0649455302c93f734a75681309072d7d0b129f20947aae5050079887aca2e69a2b11b8782a57d1f90e380dd6f5290940e44620e0f7c7d676718057aa0a845b35dec649ca42636d503f036651aabe41bee16f9fa15f65add93885791c2c9a607e86b16470d9b3a3891a5c9eb204796ef57cf9a1a50b40b31180035be308fa7be1aa6b3b02836db6001638cbab7c5ed49172aa7c257ae107b2608e24a510c8aa205d3c2031a39fccebbf4992b93e97d3693809178ba7352159b199a125bb8804c086964a470f0cccd6e0e937311ebd1873d6421c6e61a8408624b776636a25aae239988f42de112f23ace8f38de251bcc269c532914d4d895814f942233cce76d1854e8d84aea1691f2964ba066cab0b827eb11045043edecb3ad52e566d5b70236c750387558144443a20a3d13eaf716a418b4de9843295283d49f45cdc8ddb699808708a85521e924d24b41ef1cfc54984fc449252904a176595e9ebe0301e150f88fc16b87e644850e849c21bf64f57575ef99d308f341de9ea3f4a6509b5a44fa2755b45df6f8e83184ac2c90eb783d90bb919ab4fa3b0d31ad41ea6aa584320cbc6ec9dfdff5249cada2ce20d0b1d8da865161c077c08ad943d260426ee02a549be1320ab7c9419bff5b39c005641f3123f9d3079b15d15dfd5de96768e8b8ba91f26d6a192d41859996952039a81484835d49839108f6465ed246182f1a18cca7af46cefb9927a48a04c4db34509a267973f1a4afb137f9c29860ed3a886492a69acae09c4efbe09c4f7170ac6b1b4a8bf81b452b07c00b72a87492f11bc9d7bf3ef5c7f4635a209145891691b79575aea6c344f993fc2eb95b2ba7a2e947a9ed0c560882901a2c2a40a8158a9448039d71207347eb636408f8bb105baa685dc452fa7f5dbba98676aba9c414360876c606db032205eb574c2f579f092809e65f9c5dd6e1cad30b49a63653552fd00ea9e28e46c1ddf6b69d97446751401f7dcfb27f082d09e1720bfb0c1984f27e2472a4107b6108047e8dec47e084b18d5bc890b4e7c3a9818a3d0c718838a66fa2285799c92819ad64d645ba00de",
     "signature": "297cd35d0f87e78d6a8b7979709bcf932363c4b141ee4893e7aa8f15633b12896c9ee8696aa66f9ee41106cec4bcaf8616bf656498bddd112abb431084309e314dfdb500d320750849abfc76d5bb4761ecdcebf065e5f29cf4b4c4bfa930deba881655d0667bb36cc2db2d35711291040ce983eecbf10a04167871f967f25a4587d309da7f48e3e83118be7ce8c673f696116073c47ffeb229d1844bfd6cde266464c972f8b8dd5c4b68cb645143959c3e77bc8548cbff605c1c0f4d8e6a2fffec396ecad7fd48e8f09ce2147518353caf3ff5c3bb2c5f2d0b5c321dd2c762d365c380c64ccf51369ce9b30c7e2bdb8f157d42f3bb68b70461b66327db6f2b6f9247d3fc0ec9cfa0649006ad4eecb067798a3c6ba33fe473602840ea4d6a44daaf94efdf7047b5ab2d9608509a6dea77bfbe207a58dde3577535b319b78796a59b098ddfba44dd3b27d17f3646ffddce63a16dc69694a2107639d760892952f5ee7ea6c0d469947614c1163974b60ec22146bae72b5622f918ff6aeb3d67f39b18a414cc7c6330632128bfeab3b1c75b05f3e1e81a1e6766a12550cda5960ebed2fa5252cc80115811826a985ab228535f16a5807c7508ea42808f6c24ceeeab193f268f0ca9ca50341fa4fdd38d646e6cc26a94de3dc1b14a7fd934bb4cb8e1b919deb668d94610dcee424885ea12b7e5969e47eff743dcf4ab93422ddaca9544e53e382ad74ec361c8332dcd99388f1b3769c4760a7c6571dca14cea8a8f303e54382449e860ba71212c85e9968815de04f14810ad77236fc2644a3edb0f354c552f410f28ac92610462aa32b3872a2b4df5d67534377fd8948d708962dfa8d54e8923bf61f85c69fd660fd90f7f8bdb7ebafef9112b1b57e10a6a6cb29506250099451f87994dc226bfff7c45ca888a4aed"
 }
-
 ```
 
-### Return values:
+#### Return values:
 
 `data` : If `format` was specified as `raw` then the response will contain only the data field containing the raw, hex encoded, transaction data.
 
@@ -443,7 +434,7 @@ Retrieves transaction data for a given transaction hash.
 
 `timestamp` : The Unix timestamp of when the transaction was created.
 
-`blockhash` : The hash of the block that this transaction is included in.  Blank if not yet included in a block.
+`blockhash` : The hash of the block that this transaction is included in. Blank if not yet included in a block.
 
 `confirmations` : The number of confirmations that this transaction obtained by the network.
 
@@ -457,125 +448,115 @@ Retrieves transaction data for a given transaction hash.
 
 `signature` : The signature hash.
 
-`contracts` : The array of contracts bound to this transaction and their details with opcodes.    
-{    
-&nbsp;&nbsp;&nbsp;`id` : The sequential ID of this contract within the transaction.
+`contracts` : The array of contracts bound to this transaction and their details with opcodes.\
+{\
+`id` : The sequential ID of this contract within the transaction.
 
-&nbsp;&nbsp;&nbsp;`OP` : The contract operation. Can be `APPEND`, `CLAIM`, `COINBASE`, `CREATE`, `CREDIT`, `DEBIT`, `FEE`, `GENESIS`, `LEGACY`, `TRANSFER`, `TRUST`, `STAKE`, `UNSTAKE`, `WRITE`.
+&#x20;  `OP` : The contract operation. Can be `APPEND`, `CLAIM`, `COINBASE`, `CREATE`, `CREDIT`, `DEBIT`, `FEE`, `GENESIS`, `LEGACY`, `TRANSFER`, `TRUST`, `STAKE`, `UNSTAKE`, `WRITE`.
 
-&nbsp;&nbsp;&nbsp;`for` : For `CREDIT` transactions, the contract that this credit was created for . Can be `COINBASE`, `DEBIT`, or`LEGACY`.
+&#x20;  `for` : For `CREDIT` transactions, the contract that this credit was created for . Can be `COINBASE`, `DEBIT`, or`LEGACY`.
 
-&nbsp;&nbsp;&nbsp;`txid` : The transaction that was credited / claimed.
+&#x20;  `txid` : The transaction that was credited / claimed.
 
-&nbsp;&nbsp;&nbsp;`contract` : The ID of the contract within the transaction that was credited / claimed.
+&#x20;  `contract` : The ID of the contract within the transaction that was credited / claimed.
 
-&nbsp;&nbsp;&nbsp;`proof` : The register address proving the credit.
+&#x20;  `proof` : The register address proving the credit.
 
-&nbsp;&nbsp;&nbsp;`from` : For `DEBIT`, `CREDIT`, `FEE` transactions, the register address of the account that the debit is being made from.
+&#x20;  `from` : For `DEBIT`, `CREDIT`, `FEE` transactions, the register address of the account that the debit is being made from.
 
-&nbsp;&nbsp;&nbsp;`from_name` : For `DEBIT`, `CREDIT`, `FEE` transactions, the name of the account that the debit is being made from.  Only included if the name can be resolved.
+&#x20;  `from_name` : For `DEBIT`, `CREDIT`, `FEE` transactions, the name of the account that the debit is being made from. Only included if the name can be resolved.
 
-&nbsp;&nbsp;&nbsp;`to` : For `DEBIT` and `CREDIT` transactions, the register address of the recipient account.
+&#x20;  `to` : For `DEBIT` and `CREDIT` transactions, the register address of the recipient account.
 
-&nbsp;&nbsp;&nbsp;`to_name` : For `DEBIT` and `CREDIT` transactions, the name of the recipient account.  Only included if the name can be resolved.
+&#x20;  `to_name` : For `DEBIT` and `CREDIT` transactions, the name of the recipient account. Only included if the name can be resolved.
 
-&nbsp;&nbsp;&nbsp;`amount` : the token amount of the transaction.
+&#x20;  `amount` : the token amount of the transaction.
 
-&nbsp;&nbsp;&nbsp;`token` : the register address of the token that the transaction relates to.  Set to 0 for NXS transactions
+&#x20;  `token` : the register address of the token that the transaction relates to. Set to 0 for NXS transactions
 
-&nbsp;&nbsp;&nbsp;`token_name` : The name of the token that the transaction relates to.
+&#x20;  `token_name` : The name of the token that the transaction relates to.
 
-&nbsp;&nbsp;&nbsp;`reference` : For `DEBIT` and `CREDIT` transactions this is the user supplied reference used by the recipient to relate the transaction to an order or invoice number.
+&#x20;  `reference` : For `DEBIT` and `CREDIT` transactions this is the user supplied reference used by the recipient to relate the transaction to an order or invoice number.
 
 }
 
-****
+***
 
-
-# `submit/transaction`
+## `submit/transaction`
 
 Submits a transaction to be included in the mempool and broadcast to the network.
 
-
-### Endpoint:
+#### Endpoint:
 
 `/ledger/submit/transaction`
 
-
-### Parameters:
+#### Parameters:
 
 `data` : The serialized, hex-encoded transaction data to be submitted.
 
+#### Return value JSON object:
 
-### Return value JSON object:
-```    
+```
 {
     "hash": "47959e245f45aab773c0ce5320a5454f49ac15f63e15acb36855ac654d54d6314fe36b61dd64ec7a9a546bcc439a628e9badcdccb6e5f8072d04a0a3b67f8679"
 }
-
 ```
 
-### Return values:
+#### Return values:
 
 `hash` : The tranaction hash, if successfully committed to the mempool / broadcast.
 
+***
 
-****
+## `void/transaction`
 
+Voids (reverses) a debit or transfer transaction that you have previously made, that has not yet been credited or claimed by the recipient. The method creates a corresponding credit or claim transaction but back to the originating account/signature chain. This means that any applicable fees will apply, as will conditions on the debit/transfer transaction (such as expiration conditions).
 
-# `void/transaction`
+For debits that were made to a tokenized asset as part of a split payment transaction, the reversing credit will be made for the debit amount minus any partial amounts that have already been credited by the token holders.
 
-Voids (reverses) a debit or transfer transaction that you have previously made, that has not yet been credited or claimed by the recipient.  The method creates a corresponding credit or claim transaction but back to the originating account/signature chain.  This means that any applicable fees will apply, as will conditions on the debit/transfer transaction (such as expiration conditions).
-
-For debits that were made to a tokenized asset as part of a split payment transaction, the reversing credit will be made for the debit amount minus any partial amounts that have already been credited by the token holders.   
-
-
-### Endpoint:
+#### Endpoint:
 
 `/ledger/void/transaction`
 
-
-### Parameters:
+#### Parameters:
 
 `pin` : The PIN for the signature chain voiding the transaction.
 
 `session` : For multi-user API mode, (configured with multiuser=1) the session is required to identify which session (sig-chain) created the transaction being voided. For single-user API mode the session should not be supplied.
 
-`txid` : The transaction ID (hash) of the debit or transfer transaction that you wish to void.  
+`txid` : The transaction ID (hash) of the debit or transfer transaction that you wish to void.
 
+#### Return value JSON object:
 
-### Return value JSON object:
-```    
+```
 {
     "hash": "47959e245f45aab773c0ce5320a5454f49ac15f63e15acb36855ac654d54d6314fe36b61dd64ec7a9a546bcc439a628e9badcdccb6e5f8072d04a0a3b67f8679"
 }
-
 ```
 
-### Return values:
+#### Return values:
 
 `hash` : The transaction hash of the credit/claim transaction, if successfully committed to the mempool / broadcast.
 
-
 ***
 
-
-# `get/mininginfo`
+## `get/mininginfo`
 
 Retrieves mining related data for the ledger.
 
-### Endpoint:
+#### Endpoint:
 
 `/ledger/get/mininginfo`
 
+#### Parameters:
 
-### Parameters:
-````
+```
 NONE
-````
+```
 
-### Return value JSON object:
-```    
+#### Return value JSON object:
+
+```
 {
     "blocks": 20267,
     "timestamp": 1554269575,
@@ -596,8 +577,7 @@ NONE
 }
 ```
 
-
-### Return values:
+#### Return values:
 
 `blocks` : The current block height.
 
@@ -631,6 +611,4 @@ NONE
 
 `totalConnections` : The number of connections to the mining LLP of this node.
 
-
-
-****
+***

@@ -10,15 +10,15 @@ We use a very strict branching logic for our development. The branch 'merging' i
 
 We use Make to build our project to multiple platforms. Please read out build documentation for instructions and options.
 
-[Build Options](docs/build-params-reference.md)
+[Build Options](docs/setup/build-params-reference.md)
 
-[Linux](docs/build-linux.md)
+[Linux](docs/setup/build-linux.md)
 
-[Windows](docs/build-win.md)
+[Windows](docs/setup/build-win.md)
 
-[OSX](docs/build-osx.md)
+[OSX](docs/setup/build-osx.md)
 
-[iPhone OS / Android OS](docs/build-mobile.md)
+[iPhone OS / Android OS](docs/setup/build-mobile.md)
 
 ## TAO Framework
 
@@ -28,40 +28,40 @@ The core base upgrades utilizing the LLL as base templates for Tritium, Amine, a
 
 The first of the three updates in the TAO Framework. Tritium will include the following feature sets:
 
-- Trust System
-- Legacy Mode
-- Contract Layers
-- API/SDK
-- Hybrid Mode
-- Ambassador DAO
-- LISP
-- Interface/Wallet
+* Trust System
+* Legacy Mode
+* Contract Layers
+* API/SDK
+* Hybrid Mode
+* Ambassador DAO
+* LISP
+* Interface/Wallet
 
 ### Amine
 
 The second of the three updates in the TAO Framework. Amine will include the following feature sets:
 
-- pBFT + Reputation Channels (L1)
-- Network Data Sharding
-- LLD Global File System
-- Domain Specific Languages
-- DAO Voting Groups
-- pBFT + PoS Trust Network (L2)
-- LISP Multicast Links for (L1) and (L2)
-- Interface Application Market
+* pBFT + Reputation Channels (L1)
+* Network Data Sharding
+* LLD Global File System
+* Domain Specific Languages
+* DAO Voting Groups
+* pBFT + PoS Trust Network (L2)
+* LISP Multicast Links for (L1) and (L2)
+* Interface Application Market
 
 ### Obsidian
 
 The third of the three updates in the TAO Framework. Obsidian will include the following feature sets:
 
-- Extended Data Sharding
-- Decentralized Mining Pool (L3)
-- Miner Reputation to improve BFT
-- Extending DAO Voting Groups
-- DAO: L1 Voting Group
-- DAO: L2 Voting Group
-- DAO: L3 Voting Group
-- LISP Multicast Links for L3
+* Extended Data Sharding
+* Decentralized Mining Pool (L3)
+* Miner Reputation to improve BFT
+* Extending DAO Voting Groups
+* DAO: L1 Voting Group
+* DAO: L2 Voting Group
+* DAO: L3 Voting Group
+* LISP Multicast Links for L3
 
 ## LISP (Locator / Identifier Separation Protocol)
 
@@ -77,31 +77,31 @@ Following will include descriptions of the core components of the Lower Level Li
 
 Set of Operations for handling Crypto including:
 
-- Digital Signatures (ECDSA, Hash Based)
-- Hashing (SHA3 / Notable Secure Algorithms)
-- Encryption (Symmetric / Asymmetric)
-- Post-Quantum Cryptography (Experimental)
+* Digital Signatures (ECDSA, Hash Based)
+* Hashing (SHA3 / Notable Secure Algorithms)
+* Encryption (Symmetric / Asymmetric)
+* Post-Quantum Cryptography (Experimental)
 
 Currently Implemented:
 
-- SK Hashing (Skein and Keccak)
-- Argon2 Password hashing
-- AES Standard (Symmetric)
-- FALCON (Quantum Resistant Lattice Signatures)
-- OpenSSL wrapping functions (EC_KEY, BIGNUM)
+* SK Hashing (Skein and Keccak)
+* Argon2 Password hashing
+* AES Standard (Symmetric)
+* FALCON (Quantum Resistant Lattice Signatures)
+* OpenSSL wrapping functions (EC\_KEY, BIGNUM)
 
 ### Lower Level Database
 
 Set of Templates for designing high efficiency database systems. Core templates can be expanded into higher level database types.
 
-- Keychain Database
-- ACID Transactions
-- Sector Database
+* Keychain Database
+* ACID Transactions
+* Sector Database
 
 Keychains Included:
 
-- Binary File Map
-- Binary Hash Map
+* Binary File Map
+* Binary Hash Map
 
 We welcome any contributions of new keychains to provide different indexing data structures of the sector data.
 
@@ -109,38 +109,37 @@ We welcome any contributions of new keychains to provide different indexing data
 
 Set of Client / Server templates for efficient data handling. Inherit and create custom packet types to write a new protocol with ease and no network programming required.
 
-- Data Server
-- Listening Server
-- Connection Types
-- Packet Styles
-- Event Triggers
-- DDOS Throttling
+* Data Server
+* Listening Server
+* Connection Types
+* Packet Styles
+* Event Triggers
+* DDOS Throttling
 
 LLP Protocols Implemented:
 
-- Legacy
-- Tritium
-- HTTP
+* Legacy
+* Tritium
+* HTTP
 
 ### Utilities
 
 Set of useful tools for developing any program such as:
 
-- Serialization
-- Runtime
-- Debug
-- Json
-- Arguments
-- Containers
-- Configuration
-- Sorting
-- Allocators
-- Filesystem
+* Serialization
+* Runtime
+* Debug
+* Json
+* Arguments
+* Containers
+* Configuration
+* Sorting
+* Allocators
+* Filesystem
 
 ## License
 
-Nexus is released under the terms of the MIT license. See [COPYING](COPYING.MD) for more
-information or see https://opensource.org/licenses/MIT.
+Nexus is released under the terms of the MIT license. See [COPYING](COPYING.MD) for more information or see https://opensource.org/licenses/MIT.
 
 ## Contributing
 
@@ -150,9 +149,7 @@ All code contributions should follow the comments and style guides. The latest v
 
 ## L5 Stack
 
-L5 stands for 'Linux Lower Level Library & LISP' which is the stack that the TAO framework is built on top of.
-We envision this becoming a new standard for component based web design, which has the potential to decentralize web services.
-It is also a very useful and scale-able stack for Cryptocurrency and Blockchain designs.
+L5 stands for 'Linux Lower Level Library & LISP' which is the stack that the TAO framework is built on top of. We envision this becoming a new standard for component based web design, which has the potential to decentralize web services. It is also a very useful and scale-able stack for Cryptocurrency and Blockchain designs.
 
 ## Why?
 
