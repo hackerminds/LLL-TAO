@@ -58,8 +58,6 @@ namespace TAO::API
                 std::vector<std::pair<uint256_t, TAO::Register::Object>> vObjects;
                 if(LLD::Register->BatchRead(strType, vObjects, -1))
                 {
-                    debug::warning("found ", vObjects.size(), " records");
-
                     /* Add the register data to the response */
                     for(auto& rObject : vObjects)
                     {
@@ -79,6 +77,10 @@ namespace TAO::API
                         if(!FilterObject(jParams, jRegister, rObject.second))
                             continue;
 
+                        /* Filter out our expected fieldnames if specified. */
+                        if(!FilterFieldname(jParams, jRegister))
+                            continue;
+
                         /* Insert into set and automatically sort. */
                         setRegisters.insert(jRegister);
                     }
@@ -90,8 +92,6 @@ namespace TAO::API
                 std::vector<TAO::Register::Object> vObjects;
                 if(LLD::Register->BatchRead(strType, vObjects, -1))
                 {
-                    debug::warning("found ", vObjects.size(), " records");
-
                     /* Add the register data to the response */
                     for(auto& rObject : vObjects)
                     {
@@ -109,6 +109,10 @@ namespace TAO::API
 
                         /* Check that we match our filters. */
                         if(!FilterObject(jParams, jRegister, rObject))
+                            continue;
+
+                        /* Filter out our expected fieldnames if specified. */
+                        if(!FilterFieldname(jParams, jRegister))
                             continue;
 
                         /* Insert into set and automatically sort. */

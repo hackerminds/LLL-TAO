@@ -98,7 +98,8 @@ namespace TAO::API
         /* Add the transaction data if the caller has requested it*/
         if(nVerbose > 0)
         {
-            encoding::json txinfo = encoding::json::array();
+            /* Build our transactions array seperate from results. */
+            encoding::json jTransactions = encoding::json::array();
 
             /* Iterate through each transaction hash in the block vtx*/
             for(const auto& vtx : block.vtx)
@@ -110,11 +111,12 @@ namespace TAO::API
                     if(LLD::Ledger->ReadTx(vtx.second, tx))
                     {
                         /* add the transaction JSON.  */
-                        const encoding::json jRet = TransactionToJSON(tx, block, nVerbose);
+                        const encoding::json jRet =
+                            TransactionToJSON(tx, block, nVerbose);
 
                         /* Only add the transaction if it has not been filtered out */
                         if(!jRet.empty())
-                            txinfo.push_back(jRet);
+                            jTransactions.push_back(jRet);
                     }
                 }
                 else if(vtx.first == TAO::Ledger::TRANSACTION::LEGACY)
@@ -124,18 +126,19 @@ namespace TAO::API
                     if(LLD::Legacy->ReadTx(vtx.second, tx))
                     {
                         /* add the transaction JSON.  */
-                        encoding::json jRet = TransactionToJSON(tx, block, nVerbose);
+                        const encoding::json jRet =
+                            TransactionToJSON(tx, block, nVerbose);
 
                         /* Only add the transaction if it has not been filtered out */
                         if(!jRet.empty())
-                            txinfo.push_back(jRet);
+                            jTransactions.push_back(jRet);
                     }
                 }
             }
 
             /* Check to see if any transactions were returned.  If not then return an empty tx array */
-            if(!txinfo.empty())
-                result["tx"] = txinfo;
+            if(!jTransactions.empty())
+                result["tx"] = jTransactions;
             else
                 result = encoding::json();
 
@@ -1603,6 +1606,95 @@ namespace TAO::API
     }
 
 
+    /** VariableToJSON
+     *
+     *  Converts a query variable into a json string.
+     *
+     *  Varibles needs to be modular functional statements with return type specifications.
+     *  This function is hard coded variables for now, need to make it modular.
+     */
+    std::string VariableToJSON(const std::string& strValue)
+    {
+        /* Find where parameters start. */
+        const auto nBegin = strValue.find('(');
+        if(nBegin == strValue.npos)
+            throw Exception(-120, "Query Syntax Error: variable format must be variable(`params`);", strValue);
+
+        /* Parse out our variable name. */
+        const std::string strVariable =
+            strValue.substr(0, nBegin);
+
+        /* Find our ending iterator. */
+        const auto nEnd = strValue.find(')');
+        if(nEnd == strValue.npos)
+            throw Exception(-120, "Query Syntax Error: variable format must be variable(`params`);", strValue);
+
+        /* Get our parameter values. */
+        const std::string strParams =
+            strValue.substr(nBegin + 1, nEnd - nBegin - 1);
+
+        /* Date variable requires a string argument. */
+        const auto nOpen = strParams.find('`');
+        if(nOpen == strParams.npos)
+            throw Exception(-120, "Query Syntax Error: variable format requires string ", strVariable, "(`params`); | ", strValue);
+
+        /* Check for closing string. */
+        const auto nClose = strParams.rfind('`');
+        if(nClose == strParams.npos)
+            throw Exception(-120, "Query Syntax Error: variable format requires string ", strVariable, "(`params`); | ", strValue);
+
+        /* Check we have both open and close. */
+        if(nOpen == nClose)
+            throw Exception(-120, "Query Syntax Error: variable string must close ", strVariable, "(`params`); | ", strValue);
+
+        /* Now get our parameter values. */
+        const std::string strParam =
+            strParams.substr(nOpen + 1, nClose - 1);
+
+        /* Handle for date variable types. */
+        if(strVariable == "date")
+        {
+            /* Build our time struct from strptime. */
+            struct tm tm;
+            if(!runtime::strptime(strParam.c_str(), tm))
+                throw Exception(-121, "Query Syntax Error: date format must include year ex. date(`2021`);");
+
+            /* Build a simple return string. */
+            return debug::safe_printstr(std::mktime(&tm));
+        }
+
+        /* Handle for the name variable types. */
+        if(strVariable == "name")
+        {
+            /* Build our address from base58. */
+            const uint256_t hashAddress =
+                TAO::Register::Address(strParam);
+
+            /* Check for a valid reverse lookup entry. */
+            std::string strName;
+            if(!Names::ReverseLookup(hashAddress, strName))
+                throw Exception(-121, "Query Syntax Error: name reverse lookup entry not found");
+
+            return strName;
+        }
+
+        /* Handle for address resolver. */
+        if(strVariable == "resolve")
+        {
+            /* Temporary value to pass. */
+            encoding::json jParams;
+
+            /* Build our address from name record. */
+            const uint256_t hashAddress =
+                Names::ResolveAddress(jParams, strParam, true);
+
+            return TAO::Register::Address(hashAddress).ToString();
+        }
+
+        return strValue;
+    }
+
+
     /* Turns a where clause string in url encoding into a formatted JSON object. */
     encoding::json ClauseToJSON(const std::string& strClause)
     {
@@ -1640,6 +1732,11 @@ namespace TAO::API
             jClause["operator"] = strClause[nBegin] + std::string("");
             jClause["value"]    = strClause.substr(nBegin + 1);
         }
+
+        /* Check the clause for any variables. */
+        const std::string strValue = jClause["value"].get<std::string>();
+        if(strValue.find(';') != strValue.npos)
+            jClause["value"] = VariableToJSON(strValue);
 
         /* Check for valid values and parameters. */
         if(jClause["value"].get<std::string>().empty())
